@@ -1,0 +1,279 @@
+/* ===== Layout ===== */
+
+.voice-interface {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  max-width: 600px;
+  margin: 0 auto;
+  background: #ffffff;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+}
+
+/* ===== Header ===== */
+
+.voice-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: #2563eb;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.voice-header h1 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.speaking-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
+.speaking-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ffffff;
+  animation: pulse-dot 1s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+/* ===== Conversation area ===== */
+
+.conversation-view {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.conversation-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #6b7280;
+  font-size: 0.95rem;
+  text-align: center;
+  padding: 40px;
+}
+
+/* ===== Message bubbles ===== */
+
+.message-row {
+  display: flex;
+}
+
+.message-row--user {
+  justify-content: flex-end;
+}
+
+.message-row--assistant {
+  justify-content: flex-start;
+}
+
+.message-bubble {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  line-height: 1.4;
+  font-size: 0.95rem;
+  word-wrap: break-word;
+}
+
+.message-bubble--user {
+  background: #2563eb;
+  color: #ffffff;
+  border-bottom-right-radius: 4px;
+}
+
+.message-bubble--assistant {
+  background: #e5e7eb;
+  color: #1f2937;
+  border-bottom-left-radius: 4px;
+}
+
+.message-bubble--interim {
+  opacity: 0.6;
+  font-style: italic;
+}
+
+.message-text {
+  margin: 0;
+}
+
+/* ===== Typing indicator ===== */
+
+.typing-indicator {
+  display: flex;
+  gap: 5px;
+  padding: 12px 16px;
+  background: #e5e7eb;
+  border-radius: 16px;
+  border-bottom-left-radius: 4px;
+  width: fit-content;
+}
+
+.typing-indicator span {
+  display: block;
+  width: 8px;
+  height: 8px;
+  background: #9ca3af;
+  border-radius: 50%;
+  animation: typing-bounce 1.4s ease-in-out infinite;
+}
+
+.typing-indicator span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing-bounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-6px); }
+}
+
+/* ===== Mic section ===== */
+
+.mic-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 20px;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.mic-error {
+  color: #dc2626;
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.mic-button {
+  width: 180px;
+  height: 48px;
+  border: none;
+  border-radius: 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  color: #ffffff;
+}
+
+.mic-button:hover {
+  transform: scale(1.03);
+}
+
+.mic-button:active {
+  transform: scale(0.97);
+}
+
+/* Idle state: blue */
+.mic-button--idle {
+  background: #2563eb;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+}
+
+/* Listening state: red with pulse */
+.mic-button--listening {
+  background: #dc2626;
+  box-shadow: 0 2px 12px rgba(220, 38, 38, 0.4);
+  animation: mic-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes mic-pulse {
+  0%, 100% { box-shadow: 0 2px 12px rgba(220, 38, 38, 0.4); }
+  50% { box-shadow: 0 2px 24px rgba(220, 38, 38, 0.7); }
+}
+
+/* Processing state: yellow */
+.mic-button--processing {
+  background: #d97706;
+  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.3);
+  cursor: wait;
+}
+
+/* ===== Text input fallback ===== */
+
+.text-input-form {
+  display: flex;
+  gap: 8px;
+  padding: 12px 20px 20px;
+  border-top: 1px solid #e5e7eb;
+  flex-shrink: 0;
+}
+
+.text-input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 20px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.text-input:focus {
+  border-color: #2563eb;
+}
+
+.text-input:disabled {
+  background: #f3f4f6;
+}
+
+.send-button {
+  padding: 10px 20px;
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.send-button:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.send-button:disabled {
+  background: #93c5fd;
+  cursor: not-allowed;
+}
+
+/* ===== Browser warning ===== */
+
+.browser-warning {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  padding: 40px;
+  text-align: center;
+  gap: 12px;
+  color: #1f2937;
+}
+
+.browser-warning h2 {
+  color: #dc2626;
+}
