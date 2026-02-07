@@ -3,18 +3,24 @@ import useSpeechRecognition from '../hooks/useSpeechRecognition';
 import useSpeechSynthesis from '../hooks/useSpeechSynthesis';
 import ConversationView from './ConversationView';
 
-// ---- Mock response logic (temporary) ----
-function getMockResponse(userText) {
-  const lowerText = userText.toLowerCase();
-
-  if (lowerText.includes('send') || lowerText.includes('pay')) {
-    return "I heard you want to send money. Who would you like to send money to?";
-  } else if (lowerText.includes('hello') || lowerText.includes('hi')) {
-    return "Hi! I'm your payment assistant. Say something like 'Send Mike 20 dollars for pizza'";
-  } else if (lowerText.includes('help')) {
-    return "Tell me who to pay and how much. For example: 'Send Sarah 15 dollars for lunch'";
-  } else {
-    return "I'm listening. Try saying 'Send money to Mike' or ask for help.";
+// ---- Backend API call (replaces mock logic) ----
+// Sends the user message to the Flask backend which handles intent parsing
+// and Nessie API integration for real payment flows.
+async function getAssistantResponse(userMessage) {
+  try {
+    const response = await fetch('http://localhost:5000/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: userMessage,
+        session_id: 'demo_session',
+      }),
+    });
+    const data = await response.json();
+    return data.response;
+  } catch (error) {
+    console.error('Backend error:', error);
+    return "Sorry, server connection failed. Make sure backend is running on port 5000.";
   }
 }
 
@@ -51,23 +57,21 @@ export default function VoiceInterface() {
     stop: stopSpeaking,
   } = useSpeechSynthesis();
 
-  // Process a completed user message (from voice or text)
+  // Process a completed user message (from voice or text).
+  // Sends the message to the Flask backend and speaks the response.
   const handleUserMessage = useCallback(
-    (text) => {
+    async (text) => {
       if (!text.trim()) return;
 
       const userMsg = { id: ++messageIdCounter, role: 'user', text: text.trim() };
       setMessages((prev) => [...prev, userMsg]);
       setIsProcessing(true);
 
-      // Simulate a short processing delay before the assistant responds
-      setTimeout(() => {
-        const responseText = getMockResponse(text);
-        const assistantMsg = { id: ++messageIdCounter, role: 'assistant', text: responseText };
-        setMessages((prev) => [...prev, assistantMsg]);
-        setIsProcessing(false);
-        speak(responseText);
-      }, 800);
+      const responseText = await getAssistantResponse(text);
+      const assistantMsg = { id: ++messageIdCounter, role: 'assistant', text: responseText };
+      setMessages((prev) => [...prev, assistantMsg]);
+      setIsProcessing(false);
+      speak(responseText);
     },
     [speak]
   );
